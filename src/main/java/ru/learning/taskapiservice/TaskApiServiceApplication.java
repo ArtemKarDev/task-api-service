@@ -1,4 +1,4 @@
-package ru.learning.taskapi;
+package ru.learning.taskapiservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

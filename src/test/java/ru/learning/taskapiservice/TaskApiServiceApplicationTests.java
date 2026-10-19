@@ -1,4 +1,4 @@
-package ru.learning.taskapi;
+package ru.learning.taskapiservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
