@@ -29,4 +29,28 @@ public class TaskService {
     public Task createTask(Task task) {
         return taskRepository.save(task);
     }
+
+    @Transactional
+    public void deleteTask(Long id){
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(id));
+
+        taskRepository.delete(task);
+    }
+
+    @Transactional
+    public Task updateTask(Long id, Task updatedTask){
+        Task existingTask = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(id));
+
+        existingTask.setTitle(updatedTask.getTitle());
+        existingTask.setDescription(updatedTask.getDescription());
+        existingTask.setPriority(updatedTask.getPriority());
+        existingTask.setStatus(updatedTask.getStatus());
+        existingTask.setAssignee(updatedTask.getAssignee());
+
+        return taskRepository.save(existingTask);
+
+    }
+
 }
