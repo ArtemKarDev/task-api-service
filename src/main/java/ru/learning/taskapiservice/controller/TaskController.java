@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.learning.taskapiservice.dto.PatchTaskRequest;
 import ru.learning.taskapiservice.entity.Task;
 import ru.learning.taskapiservice.service.TaskService;
 import jakarta.validation.Valid;
@@ -19,18 +20,18 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping
-    public List<Task> getAllTask(){
+    public List<Task> getAllTask() {
         return taskService.getAllTasks();
     }
 
     @GetMapping("/{id}")
-    public Task getTaskById(@PathVariable("id") Long id){
+    public Task getTaskById(@PathVariable("id") Long id) {
         return taskService.getTaskById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Task createTask(@Valid @RequestBody CreateTaskRequest request){
+    public Task createTask(@Valid @RequestBody CreateTaskRequest request) {
 
         Task task = new Task();
         task.setTitle(request.title());
@@ -43,7 +44,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable("id") Long id){
+    public ResponseEntity<Void> deleteTask(@PathVariable("id") Long id) {
         taskService.deleteTask(id);
         return ResponseEntity.noContent().build();
 
@@ -52,7 +53,7 @@ public class TaskController {
     @PutMapping("/{id}")
     public Task updateTask(
             @PathVariable("id") Long id,
-            @Valid @RequestBody CreateTaskRequest request){
+            @Valid @RequestBody CreateTaskRequest request) {
         Task task = new Task();
         task.setTitle(request.title());
         task.setDescription(request.description());
@@ -64,4 +65,16 @@ public class TaskController {
     }
 
 
+    @PatchMapping("/{id}")
+    public Task patchTask(@PathVariable("id") Long id,
+                          @Valid @RequestBody PatchTaskRequest request) {
+        if (request.isEmpty()){
+            throw new IllegalArgumentException("At least one field must be provided");
+        }
+
+        if(request.title() != null && request.title().isBlank()){
+            throw new IllegalArgumentException("Title must be blank");
+        }
+        return taskService.patchTask(id, request);
+    }
 }

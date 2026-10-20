@@ -1,13 +1,15 @@
 package ru.learning.taskapiservice.exceptions;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
+
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -36,6 +38,13 @@ public class GlobalExceptionHandler {
                 );
 
         return Map.of("errors", errors);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgument(
+            IllegalArgumentException exception
+    ) {
+        return ResponseEntity.badRequest().body(Map.of("error", exception.getMessage()));
     }
 
 

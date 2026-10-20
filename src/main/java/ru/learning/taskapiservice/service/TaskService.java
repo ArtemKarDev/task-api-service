@@ -3,9 +3,11 @@ package ru.learning.taskapiservice.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.learning.taskapiservice.dto.PatchTaskRequest;
 import ru.learning.taskapiservice.entity.Task;
 import ru.learning.taskapiservice.repository.TaskRepository;
 import ru.learning.taskapiservice.exceptions.TaskNotFoundException;
+
 import java.util.List;
 
 @Service
@@ -31,7 +33,7 @@ public class TaskService {
     }
 
     @Transactional
-    public void deleteTask(Long id){
+    public void deleteTask(Long id) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException(id));
 
@@ -39,7 +41,7 @@ public class TaskService {
     }
 
     @Transactional
-    public Task updateTask(Long id, Task updatedTask){
+    public Task updateTask(Long id, Task updatedTask) {
         Task existingTask = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException(id));
 
@@ -51,6 +53,20 @@ public class TaskService {
 
         return taskRepository.save(existingTask);
 
+    }
+
+    @Transactional
+    public Task patchTask(Long id, PatchTaskRequest request){
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(id));
+
+        if (request.title() != null){task.setTitle(request.title());}
+        if (request.description() != null){task.setDescription(request.description());}
+        if (request.status() != null){task.setStatus(request.status());}
+        if (request.priority() != null){task.setPriority(request.priority());}
+        if (request.assignee() != null){task.setAssignee(request.assignee());}
+
+        return taskRepository.save(task);
     }
 
 }

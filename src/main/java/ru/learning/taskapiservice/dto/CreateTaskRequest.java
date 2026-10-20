@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record CreateTaskRequest (
+public record CreateTaskRequest(
 
         @NotBlank(message = "Title must be blank")
         @Size(max = 255, message = "Title must not exceed 255 characters")
@@ -29,6 +29,6 @@ public record CreateTaskRequest (
         @Size(max = 100, message = "Assignee must not exceed 100 characters")
         String assignee
 
-){
+) {
 
 }

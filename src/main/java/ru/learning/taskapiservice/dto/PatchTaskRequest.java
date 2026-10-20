@@ -1,0 +1,28 @@
+package ru.learning.taskapiservice.dto;
+
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
+public record PatchTaskRequest(
+
+        @Size(max = 255, message = "Title must not exceed 255 characters")
+        String title,
+        String description,
+
+        @Pattern(regexp = "NEW|IN_PROGRESS|DONE")
+        String status,
+
+        @Pattern(regexp = "LOW|MEDIUM|HIGH")
+        String priority,
+        @Size(max = 100, message = "Assignee must not exceed 100 characters")
+        String assignee
+) {
+        public boolean isEmpty(){
+                return title == null
+                        && description == null
+                        && status == null
+                        && priority == null
+                        && assignee == null;
+
+        }
+}
