@@ -67,3 +67,4 @@ RUN apt-get update \
 USER jenkins
 сборка - запускается из папки с докер-файлом
 docker build -t jenkins-docker:lts .
+
