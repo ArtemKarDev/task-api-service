@@ -1,5 +1,6 @@
 package ru.learning.taskapiservice.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -38,11 +39,13 @@ public class Task {
     @Setter
     @Getter
     @Column(name = "created_at", nullable = false, updatable = false)
+    @Schema(type = "string", example = "2026-10-22T15:13:05.04423")
     private LocalDateTime createdAt;
 
     @Setter
     @Getter
     @Column(name = "updated_at", nullable = false)
+    @Schema(type = "string", example = "2026-10-22T15:13:05.04423")
     private LocalDateTime updatedAt;
 
     public Task(){
