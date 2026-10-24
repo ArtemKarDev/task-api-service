@@ -3,6 +3,8 @@ package ru.learning.taskapiservice.entity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Data;
+import ru.learning.taskapiservice.dto.Priority;
+import ru.learning.taskapiservice.dto.TaskStatus;
 
 import java.time.LocalDateTime;
 

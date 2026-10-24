@@ -1,4 +1,4 @@
-package ru.learning.taskapiservice.entity;
+package ru.learning.taskapiservice.dto;
 
 public enum TaskStatus {
     NEW,

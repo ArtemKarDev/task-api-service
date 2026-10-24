@@ -1,9 +1,6 @@
 package ru.learning.taskapiservice.dto;
 
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import ru.learning.taskapiservice.entity.Priority;
-import ru.learning.taskapiservice.entity.TaskStatus;
 
 public record PatchTaskRequest(
 

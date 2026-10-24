@@ -1,11 +1,9 @@
 package ru.learning.taskapiservice.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import ru.learning.taskapiservice.entity.Priority;
-import ru.learning.taskapiservice.entity.TaskStatus;
 
 public record CreateTaskRequest(
 
@@ -22,6 +20,7 @@ public record CreateTaskRequest(
 //                message = "Status must be NEW, IN_PROGRESS or DONE"
 //        )
         @NotNull(message = "Status not be null")
+        @Schema(description = "Task status", example = "NEW")
         TaskStatus status,
 
 //        @NotBlank(message = "Priority must not be blank")
@@ -30,6 +29,7 @@ public record CreateTaskRequest(
 //                message = "Priority must be LOW, MEDIUM or HIGH"
 //        )
         @NotNull(message = "Priority not be null")
+        @Schema(description = "Task priority", example = "HIGH")
         Priority priority,
 
         @Size(max = 100, message = "Assignee must not exceed 100 characters")
