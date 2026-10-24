@@ -2,6 +2,8 @@ package ru.learning.taskapiservice.dto;
 
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import ru.learning.taskapiservice.entity.Priority;
+import ru.learning.taskapiservice.entity.TaskStatus;
 
 public record PatchTaskRequest(
 
@@ -11,11 +13,11 @@ public record PatchTaskRequest(
         @Size(max = 5000, message = "Description must not exceed 5000 characters")
         String description,
 
-        @Pattern(regexp = "NEW|IN_PROGRESS|DONE")
-        String status,
+//        @Pattern(regexp = "NEW|IN_PROGRESS|DONE")
+        TaskStatus status,
 
-        @Pattern(regexp = "LOW|MEDIUM|HIGH")
-        String priority,
+//        @Pattern(regexp = "LOW|MEDIUM|HIGH")
+        Priority priority,
         @Size(max = 100, message = "Assignee must not exceed 100 characters")
         String assignee
 ) {

@@ -1,8 +1,11 @@
 package ru.learning.taskapiservice.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import ru.learning.taskapiservice.entity.Priority;
+import ru.learning.taskapiservice.entity.TaskStatus;
 
 public record CreateTaskRequest(
 
@@ -13,19 +16,21 @@ public record CreateTaskRequest(
         @Size(max = 5000, message = "Description must not exceed 5000 characters")
         String description,
 
-        @NotBlank(message = "Status not be blank")
-        @Pattern(
-                regexp = "NEW|IN_PROGRESS|DONE",
-                message = "Status must be NEW, IN_PROGRESS or DONE"
-        )
-        String status,
+//        @NotBlank(message = "Status not be blank")
+//        @Pattern(
+//                regexp = "NEW|IN_PROGRESS|DONE",
+//                message = "Status must be NEW, IN_PROGRESS or DONE"
+//        )
+        @NotNull(message = "Status not be null")
+        TaskStatus status,
 
-        @NotBlank(message = "Priority must not be blank")
-        @Pattern(
-                regexp = "LOW|MEDIUM|HIGH",
-                message = "Priority must be LOW, MEDIUM or HIGH"
-        )
-        String priority,
+//        @NotBlank(message = "Priority must not be blank")
+//        @Pattern(
+//                regexp = "LOW|MEDIUM|HIGH",
+//                message = "Priority must be LOW, MEDIUM or HIGH"
+//        )
+        @NotNull(message = "Priority not be null")
+        Priority priority,
 
         @Size(max = 100, message = "Assignee must not exceed 100 characters")
         String assignee

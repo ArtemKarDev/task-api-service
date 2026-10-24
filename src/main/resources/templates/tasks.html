@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Список задач</title>
+</head>
+<body>
+<h1>Список задач</h1>
+
+<table border="1" cellpadding="8">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th>Описание</th>
+        <th>Исполнитель</th>
+        <th>Приоритет</th>
+        <th>Статус</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="task : ${tasks}">
+        <td th:text="${task.id}"></td>
+        <td th:text="${task.title}"></td>
+        <td th:text="${task.description}"></td>
+        <td th:text="${task.assignee}"></td>
+        <td th:text="${task.priority}"></td>
+        <td th:text="${task.status}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
