@@ -1,67 +1,12 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Создание задачи</title>
-</head>
+<head th:replace="~{fragments/layout :: head('Создание задачи')}"></head>
 <body>
-
-<h1>Создание задачи</h1>
-
-<form th:action="@{/tasks}" th:object="${taskForm}" method="post">
-
-    <div>
-        <label for="title">Название:</label>
-        <input type="text" id="title" th:field="*{title}" required>
-        <div th:if="${#fields.hasErrors('title')}"
-             th:errors="*{title}"></div>
-    </div>
-
-    <div>
-        <label for="description">Описание:</label>
-        <textarea id="description" th:field="*{description}"></textarea>
-        <div th:if="${#fields.hasErrors('description')}"
-             th:errors="*{description}"></div>
-    </div>
-
-    <div>
-        <label for="assignee">Исполнитель:</label>
-        <input type="text" id="assignee" th:field="*{assignee}">
-        <div th:if="${#fields.hasErrors('assignee')}"
-             th:errors="*{assignee}"></div>
-    </div>
-
-    <div>
-        <label for="priority">Приоритет:</label>
-        <select id="priority" th:field="*{priority}" required>
-            <option value="">Выберите приоритет</option>
-            <option th:each="priority : ${priority}"
-                    th:value="${priority}"
-                    th:text="${priority}">
-            </option>
-        </select>
-        <div th:if="${#fields.hasErrors('priority')}"
-             th:errors="*{priority}"></div>
-    </div>
-
-    <div>
-        <label for="status">Статус:</label>
-        <select id="status" th:field="*{status}" required>
-            <option value="">Выберите статус</option>
-            <option th:each="status : ${status}"
-                    th:value="${status}"
-                    th:text="${status}">
-            </option>
-        </select>
-        <div th:if="${#fields.hasErrors('status')}"
-             th:errors="*{status}"></div>
-    </div>
-
-    <button type="submit">Создать задачу</button>
-
-</form>
-
-<a th:href="@{/tasks}">Вернуться к списку задач</a>
-
+<header th:replace="~{fragments/layout :: header('create')}"></header>
+<main>
+    <h1>Создание задачи</h1>
+    <p class="lead">Укажите название, приоритет и статус. Описание и исполнителя можно добавить позже.</p>
+    <form th:replace="~{fragments/task-fields :: taskForm(@{/tasks}, 'Создать задачу')}"></form>
+</main>
 </body>
 </html>

@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import ru.learning.taskapiservice.entity.Task;
 
 @Data
 public class TaskForm {
@@ -24,5 +25,15 @@ public class TaskForm {
 
     @NotNull(message = "Выберите статус")
     private TaskStatus status;
+
+    public static TaskForm from(Task task) {
+        TaskForm f = new TaskForm();
+        f.setTitle(task.getTitle());
+        f.setDescription(task.getDescription());
+        f.setAssignee(task.getAssignee());
+        f.setPriority(task.getPriority());
+        f.setStatus(task.getStatus());
+        return f;
+    }
 
 }
