@@ -28,6 +28,7 @@ services:
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       REQUEST_LOG_LEVEL: DEBUG
+      HTTP_LOG_ENABLED: "true"
     ports:
       - "127.0.0.1:${APP_PORT:?задайте APP_PORT в env-файле}:8080"
     networks:
