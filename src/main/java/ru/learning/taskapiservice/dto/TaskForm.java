@@ -17,7 +17,7 @@ public class TaskForm {
     private String description;
 
     @NotBlank(message = "Укажите исполнителя")
-    @Size(max = 30, message = "Имя исполнителя не должно превышать 30 символов")
+    @Size(max = 100, message = "Имя исполнителя не должно превышать 100 символов")
     private String assignee;
 
     @NotNull(message = "Выберите приоритет")

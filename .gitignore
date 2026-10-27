@@ -28,3 +28,12 @@ target/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Файлы окружения стендов (содержат пароли): в Git только *.example
+env/*.env
+!env/*.env.example
+
+# Резервные копии БД
+*.dump
+dev_backup.sql
+backups/

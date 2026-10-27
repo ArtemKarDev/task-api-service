@@ -34,7 +34,7 @@ public class Task {
     private Priority priority;
 
 
-    @Column(nullable = false, length = 30)
+    @Column(length = 100)
     private String assignee;
 
     @Column(name = "created_at", nullable = false, updatable = false)
