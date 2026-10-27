@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Вход')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('login')}"></header>
+<main>
+    <h1>Вход</h1>
+    <p class="lead">Авторизация появится в следующей версии.</p>
+    <!-- Для Spring Security: method="post", th:action="@{/login}", поля username и password -->
+    <form class="panel" style="max-width:420px" method="post" th:action="@{/login}" novalidate data-testid="login-form">
+        <div class="field"><label for="username">Логин</label>
+            <input id="username" name="username" autocomplete="username" data-testid="login-username"></div>
+        <div class="field"><label for="password">Пароль</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" data-testid="login-password"></div>
+        <button class="btn" type="submit" data-testid="login-submit">Войти</button>
+    </form>
+</main>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Изменение задачи')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('search')}"></header>
+<main>
+    <h1 th:text="'Изменение задачи № ' + ${taskId}">Изменение задачи</h1>
+    <p class="lead">Измените нужные поля и сохраните.</p>
+    <form th:replace="~{fragments/task-fields :: taskForm(@{/tasks/{id}(id=${taskId})}, 'Сохранить изменения')}"></form>
+</main>
+</body>
+</html>

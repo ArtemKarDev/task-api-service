@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Создание задачи')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('create')}"></header>
+<main>
+    <h1>Создание задачи</h1>
+    <p class="lead">Укажите название, приоритет и статус. Описание и исполнителя можно добавить позже.</p>
+    <form th:replace="~{fragments/task-fields :: taskForm(@{/tasks}, 'Создать задачу')}"></form>
+</main>
+</body>
+</html>

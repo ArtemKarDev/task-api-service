@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.learning.taskapiservice.dto.PatchTaskRequest;
+import ru.learning.taskapiservice.dto.TaskStatus;
 import ru.learning.taskapiservice.entity.Task;
 import ru.learning.taskapiservice.repository.TaskRepository;
 import ru.learning.taskapiservice.exceptions.TaskNotFoundException;
@@ -67,6 +68,11 @@ public class TaskService {
         if (request.assignee() != null){task.setAssignee(request.assignee());}
 
         return taskRepository.save(task);
+    }
+
+    public List<Task> searchTasks(String q, TaskStatus status) {
+        String pattern = (q == null || q.isBlank()) ? null : "%" + q.trim().toLowerCase() + "%";
+        return taskRepository.search(pattern, status);
     }
 
 }

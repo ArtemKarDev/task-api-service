@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Поиск задач')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('search')}"></header>
+<main>
+    <h1>Поиск задач</h1>
+    <p class="lead">Найдите задачу по названию, описанию или исполнителю и отфильтруйте по статусу.</p>
+
+    <div class="flash" th:if="${message}" th:text="${message}" role="status" data-testid="flash"></div>
+
+    <form th:action="@{/tasks}" method="get" class="toolbar" role="search" data-testid="search-form">
+        <input type="search" name="q" th:value="${param.q}" placeholder="Название, описание, исполнитель"
+               aria-label="Поиск" data-testid="search-input">
+        <select name="status" aria-label="Статус" data-testid="status-filter">
+            <option value="">Все статусы</option>
+            <option th:each="s : ${status}" th:value="${s}" th:text="${s}"
+                    th:selected="${param.status != null and param.status[0] == s.toString()}"></option>
+        </select>
+        <button type="submit" class="btn" data-testid="search-btn">Найти</button>
+    </form>
+
+    <div class="tablewrap">
+        <table data-testid="task-table">
+            <thead>
+            <tr>
+                <th>ID</th><th>Название</th><th>Описание</th><th>Исполнитель</th>
+                <th>Приоритет</th><th>Статус</th><th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="task : ${tasks}" data-testid="task-row" th:attr="data-id=${task.id}">
+                <td th:text="${task.id}" data-testid="task-id"></td>
+                <td th:text="${task.title}" data-testid="task-title"></td>
+                <td th:text="${task.description}" data-testid="task-description"></td>
+                <td th:text="${task.assignee}" data-testid="task-assignee"></td>
+                <td><span class="chip" th:text="${task.priority}" th:attr="data-v=${task.priority}" data-testid="task-priority"></span></td>
+                <td><span class="chip" th:text="${task.status}" th:attr="data-v=${task.status}" data-testid="task-status"></span></td>
+                <td>
+                    <div class="actions">
+                        <a class="btn ghost small" th:href="@{/tasks/{id}/edit(id=${task.id})}" data-testid="edit-btn">Изменить</a>
+                        <form th:action="@{/tasks/{id}/delete(id=${task.id})}" method="post"
+                              onsubmit="return confirm('Удалить задачу?')">
+                            <button type="submit" class="btn danger small" data-testid="delete-btn">Удалить</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="empty" th:if="${#lists.isEmpty(tasks)}" data-testid="empty-state">
+            Ничего не найдено. Измените запрос или <a th:href="@{/tasks/new}">создайте задачу</a>.
+        </div>
+    </div>
+</main>
+</body>
+</html>

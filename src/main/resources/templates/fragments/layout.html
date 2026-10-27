@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' — Task Lab'">Task Lab</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:fragment="header(active)" class="site-header">
+    <div class="header-inner">
+        <a class="brand" th:href="@{/tasks}" data-testid="brand">Task Lab</a>
+        <nav aria-label="Основное меню">
+            <a th:href="@{/tasks}" th:classappend="${active == 'search'} ? 'active'" data-testid="nav-search">Поиск задач</a>
+            <a th:href="@{/tasks/new}" th:classappend="${active == 'create'} ? 'active'" data-testid="nav-create">Новая задача</a>
+            <a th:href="@{/about}" th:classappend="${active == 'about'} ? 'active'" data-testid="nav-about">О проекте</a>
+        </nav>
+        <a class="btn small login-link" th:href="@{/login}" data-testid="nav-login">Войти</a>
+    </div>
+</header>
+</body>
+</html>

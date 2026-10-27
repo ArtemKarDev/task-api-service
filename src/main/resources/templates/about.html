@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('О проекте')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('about')}"></header>
+<main>
+    <h1>О проекте</h1>
+    <p class="lead">Учебное приложение для практики автоматизированного тестирования.</p>
+    <div class="panel about" data-testid="about-content">
+        <p>В Task Lab можно создавать, искать, изменять и удалять задачи. Приложение намеренно простое: на нём удобно отрабатывать тесты, не отвлекаясь на сложную логику.</p>
+        <ul>
+            <li><b>UI-тесты:</b> у ключевых элементов есть атрибуты <code>data-testid</code>.</li>
+            <li><b>API-тесты:</b> те же операции доступны через REST.</li>
+            <li><b>Данные:</b> задачи хранятся в базе данных.</li>
+        </ul>
+        <p>Планируется: авторизация, роли пользователей и расширенные фильтры.</p>
+    </div>
+</main>
+</body>
+</html>

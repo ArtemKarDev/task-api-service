@@ -1,0 +1,39 @@
+package ru.learning.taskapiservice.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+import ru.learning.taskapiservice.entity.Task;
+
+@Data
+public class TaskForm {
+
+    @NotBlank(message = "Введите название задачи")
+    @Size(max = 255, message = "Название не должно превышать 255 символов")
+    private String title;
+
+    @Size(max = 5000, message = "Описание не должно превышать 5000 символов")
+    private String description;
+
+    @NotBlank(message = "Укажите исполнителя")
+    @Size(max = 100, message = "Имя исполнителя не должно превышать 100 символов")
+    private String assignee;
+
+    @NotNull(message = "Выберите приоритет")
+    private Priority priority;
+
+    @NotNull(message = "Выберите статус")
+    private TaskStatus status;
+
+    public static TaskForm from(Task task) {
+        TaskForm f = new TaskForm();
+        f.setTitle(task.getTitle());
+        f.setDescription(task.getDescription());
+        f.setAssignee(task.getAssignee());
+        f.setPriority(task.getPriority());
+        f.setStatus(task.getStatus());
+        return f;
+    }
+
+}

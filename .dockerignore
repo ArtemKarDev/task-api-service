@@ -1,0 +1,17 @@
+git
+.gitignore
+.idea
+*.iml
+
+target
+
+.env
+*.env
+env
+
+backups
+*.dump
+dev_backup.sql
+
+HELP.md
+compose*.yaml
