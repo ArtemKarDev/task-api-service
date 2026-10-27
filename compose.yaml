@@ -27,6 +27,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
+      REQUEST_LOG_LEVEL: DEBUG
     ports:
       - "127.0.0.1:${APP_PORT:?задайте APP_PORT в env-файле}:8080"
 
