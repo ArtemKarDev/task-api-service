@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent none
 
     triggers {
         // Раз в ~5 минут проверять, есть ли новые коммиты в main
