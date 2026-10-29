@@ -16,7 +16,6 @@ public class TaskForm {
     @Size(max = 5000, message = "Описание не должно превышать 5000 символов")
     private String description;
 
-    @NotBlank(message = "Укажите исполнителя")
     @Size(max = 100, message = "Имя исполнителя не должно превышать 100 символов")
     private String assignee;
 
