@@ -30,6 +30,8 @@ public class TaskService {
 
     @Transactional
     public Task createTask(Task task) {
+        task.setDescription(blankToNull(task.getDescription()));
+        task.setAssignee(blankToNull(task.getAssignee()));
         return taskRepository.save(task);
     }
 
@@ -47,10 +49,10 @@ public class TaskService {
                 .orElseThrow(() -> new TaskNotFoundException(id));
 
         existingTask.setTitle(updatedTask.getTitle());
-        existingTask.setDescription(updatedTask.getDescription());
+        existingTask.setDescription(blankToNull(updatedTask.getDescription()));
+        existingTask.setAssignee(blankToNull(updatedTask.getAssignee()));
         existingTask.setPriority(updatedTask.getPriority());
         existingTask.setStatus(updatedTask.getStatus());
-        existingTask.setAssignee(updatedTask.getAssignee());
 
         return taskRepository.save(existingTask);
 
@@ -73,6 +75,10 @@ public class TaskService {
     public List<Task> searchTasks(String q, TaskStatus status) {
         String pattern = (q == null || q.isBlank()) ? null : "%" + q.trim().toLowerCase() + "%";
         return taskRepository.search(pattern, status);
+    }
+
+    private static String blankToNull(String value) {
+        return value == null || value.isBlank() ? null : value;
     }
 
 }

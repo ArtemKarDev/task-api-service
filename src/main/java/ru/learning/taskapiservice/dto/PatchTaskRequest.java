@@ -16,6 +16,7 @@ public record PatchTaskRequest(
         @Size(max = 255, message = "must not exceed 255 characters")
         String title,
 
+        @Pattern(regexp = "(?s).*\\S.*", message = "must not be blank")
         @Size(max = 5000, message = "must not exceed 5000 characters")
         String description,
 
@@ -23,6 +24,7 @@ public record PatchTaskRequest(
 
         Priority priority,
 
+        @Pattern(regexp = "(?s).*\\S.*", message = "must not be blank")
         @Size(max = 100, message = "must not exceed 100 characters")
         String assignee
 ) {
