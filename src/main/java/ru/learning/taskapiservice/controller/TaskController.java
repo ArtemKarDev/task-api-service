@@ -1,26 +1,26 @@
 package ru.learning.taskapiservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.learning.taskapiservice.dto.PatchTaskRequest;
-import ru.learning.taskapiservice.entity.Task;
-import ru.learning.taskapiservice.service.TaskService;
-import jakarta.validation.Valid;
-import ru.learning.taskapiservice.dto.CreateTaskRequest;
 import ru.learning.taskapiservice.dto.ApiErrorResponse;
+import ru.learning.taskapiservice.dto.CreateTaskRequest;
+import ru.learning.taskapiservice.dto.PatchTaskRequest;
 import ru.learning.taskapiservice.dto.ValidationErrorResponse;
+import ru.learning.taskapiservice.entity.Task;
+import ru.learning.taskapiservice.exceptions.InvalidRequestException;
+import ru.learning.taskapiservice.service.TaskService;
 
 import java.util.List;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 
 @Tag(
         name = "Tasks",
@@ -134,11 +134,7 @@ public class TaskController {
     public Task patchTask(@PathVariable("id") Long id,
                           @Valid @RequestBody PatchTaskRequest request) {
         if (request.isEmpty()) {
-            throw new IllegalArgumentException("At least one field must be provided");
-        }
-
-        if (request.title() != null && request.title().isBlank()) {
-            throw new IllegalArgumentException("Title must be blank");
+            throw new InvalidRequestException("At least one field must be provided");
         }
         return taskService.patchTask(id, request);
     }
