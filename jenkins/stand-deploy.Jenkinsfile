@@ -44,7 +44,7 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: "env-${params.STAND}", variable: 'ENV_FILE')]) {
                     // local: поднимаем только БД, приложение запускается из IDEA
-                    withEnv(["SERVICES=${params.STAND == 'local' ? 'postgres' : ''}"]) {
+                    withEnv(["SERVICES=${params.STAND == 'local' ? 'postgres kafka' : ''}"]) {
                         script {
                             switch (params.ACTION) {
                                 case 'status':
