@@ -42,4 +42,5 @@ docker compose --env-file env/stage.env down
 > **Осторожно:** `docker compose down -v` удаляет том, то есть **все данные стенда**.
 > Имя проекта dev (`task-api-service`) нельзя менять: по нему подключается том с данными.
 
+
 Схему БД создаёт и меняет Flyway (`src/main/resources/db/migration`). Применённые миграции править нельзя, изменения делаются новым файлом `V2__...sql`.
