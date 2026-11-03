@@ -92,5 +92,18 @@ pipeline {
             }
             archiveArtifacts artifacts: "stand-logs-${params.STAND}.txt", allowEmptyArchive: true
         }
+        failure {
+            withCredentials([string(credentialsId: 'telegram-bot-token', variable: 'TG_TOKEN'),
+                             string(credentialsId: 'telegram-chat-id', variable: 'TG_CHAT')]) {
+                sh '''
+                    curl -s -S --max-time 20 "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
+                      --data-urlencode "chat_id=${TG_CHAT}" \
+                      --data-urlencode "text=❌ Deploy ${STAND}: ${ACTION} failed
+Build #${BUILD_NUMBER}
+${BUILD_URL}console" \
+                      -o /dev/null -w "Telegram: HTTP %{http_code}\n" || true
+                '''
+            }
+        }
     }
 }
