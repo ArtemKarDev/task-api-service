@@ -14,6 +14,7 @@ pipeline {
                      description: 'Только с ACTION=up: сначала удалить ВСЕ данные стенда (том БД). Разрешено для dev и local, для stage запрещено')
         booleanParam(name: 'BACKUP', defaultValue: false,
                      description: 'Только с RESET_DATA: перед удалением сохранить дамп БД как артефакт сборки')
+        string(name: 'TRIGGER', defaultValue: 'manual', description: 'Источник запуска (заполняют вызывающие задания)')
     }
 
     environment {
@@ -99,8 +100,11 @@ pipeline {
                     curl -s -S --max-time 20 "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
                       --data-urlencode "chat_id=${TG_CHAT}" \
                       --data-urlencode "text=❌ Deploy ${STAND}: ${ACTION} failed
-Build #${BUILD_NUMBER}
-${BUILD_URL}console" \
+                        Trigger: ${TRIGGER:-manual}
+                        Build #${BUILD_NUMBER}
+                        ${BUILD_URL}console" \
+                        Build #${BUILD_NUMBER}
+                        ${BUILD_URL}console" \
                       -o /dev/null -w "Telegram: HTTP %{http_code}\n" || true
                 '''
             }

@@ -21,6 +21,7 @@ pipeline {
                     booleanParam(name: 'BACKUP', value: false),
                     string(name: 'TESTS', value: 'smoke'),
                     string(name: 'BROWSER', value: 'chrome')
+                    string(name: 'TRIGGER', value: 'auto: service changed'),
                 ]
             }
         }
