@@ -84,10 +84,23 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, exception.getMessage(), List.of(), request);
     }
 
-    /**
-     * Всё остальное. Стандартные веб-ошибки Spring (415 и т.п.) реализуют ErrorResponse и получают
-     * свой статус. Неизвестные ошибки: 500 без подробностей, стек только в логе.
-     */
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidCredentials(InvalidCredentialsException exception,
+                                                                     HttpServletRequest request) {
+        return build(HttpStatus.UNAUTHORIZED, exception.getMessage(), List.of(), request);
+    }
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ApiErrorResponse> handleUserAlreadyExists(UserAlreadyExistsException exception,
+                                                                    HttpServletRequest request) {
+        return build(HttpStatus.CONFLICT, exception.getMessage(), List.of(), request);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleUserNotFound(UserNotFoundException exception,
+                                                               HttpServletRequest request) {
+        return build(HttpStatus.NOT_FOUND, exception.getMessage(), List.of(), request);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleAny(Exception exception, HttpServletRequest request) {
         if (exception instanceof ErrorResponse errorResponse) {

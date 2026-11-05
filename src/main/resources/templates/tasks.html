@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/layout :: head('Поиск задач')}"></head>
 <body>
 <header th:replace="~{fragments/layout :: header('search')}"></header>
@@ -39,7 +40,8 @@
                 <td>
                     <div class="actions">
                         <a class="btn ghost small" th:href="@{/tasks/{id}/edit(id=${task.id})}" data-testid="edit-btn">Изменить</a>
-                        <form th:action="@{/tasks/{id}/delete(id=${task.id})}" method="post"
+                        <form sec:authorize="hasRole('ADMIN')"
+                              th:action="@{/tasks/{id}/delete(id=${task.id})}" method="post"
                               onsubmit="return confirm('Удалить задачу?')">
                             <button type="submit" class="btn danger small" data-testid="delete-btn">Удалить</button>
                         </form>

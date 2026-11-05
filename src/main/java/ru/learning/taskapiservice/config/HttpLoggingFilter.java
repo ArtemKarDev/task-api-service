@@ -4,9 +4,10 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -15,12 +16,10 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-/**
- * Пишет в лог метод, адрес, тела запроса и ответа, статус и время для REST-запросов (/api/**).
- * Включается параметром app.http-log.enabled=true (на стендах через переменную HTTP_LOG_ENABLED).
- */
+@Slf4j
 @Component
-@ConditionalOnProperty(name = "app.http-log.enabled", havingValue = "true")
+@Order(-150)
+//@ConditionalOnProperty(name = "app.http-log.enabled", havingValue = "true")
 public class HttpLoggingFilter extends OncePerRequestFilter {
 
     private static final Logger log = LoggerFactory.getLogger(HttpLoggingFilter.class);
