@@ -94,6 +94,13 @@ public class GlobalExceptionHandler {
                                                                     HttpServletRequest request) {
         return build(HttpStatus.CONFLICT, exception.getMessage(), List.of(), request);
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleUserNotFound(UserNotFoundException exception,
+                                                               HttpServletRequest request) {
+        return build(HttpStatus.NOT_FOUND, exception.getMessage(), List.of(), request);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleAny(Exception exception, HttpServletRequest request) {
         if (exception instanceof ErrorResponse errorResponse) {

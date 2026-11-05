@@ -7,9 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.learning.taskapiservice.entity.Role;
 import ru.learning.taskapiservice.entity.UserAccount;
-import ru.learning.taskapiservice.exceptions.InvalidCredentialsException;
-import ru.learning.taskapiservice.exceptions.PasswordChangeException;
-import ru.learning.taskapiservice.exceptions.UserAlreadyExistsException;
+import ru.learning.taskapiservice.exceptions.*;
 import ru.learning.taskapiservice.repository.UserAccountRepository;
 import ru.learning.taskapiservice.security.PasswordPolicy;
 
@@ -60,5 +58,42 @@ public class UserService {
         return repository.findAll(Sort.by("id"));
     }
 
+    @Transactional
+    public UserAccount updateUser(Long id, Boolean enabled, Role role, String actorUsername) {
+        if (enabled == null && role == null) {
+            throw new InvalidRequestException("At least one of 'enabled' or 'role' must be provided");
+        }
+        UserAccount user = repository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+
+        boolean self = user.getUsername().equals(actorUsername);
+        if (self && (Boolean.FALSE.equals(enabled) || (role != null && role != Role.ADMIN))) {
+            throw new InvalidRequestException("You cannot disable or demote your own account");
+        }
+
+        if (enabled != null) {
+            user.setEnabled(enabled);
+        }
+        if (role != null) {
+            user.setRole(role);
+        }
+        return repository.save(user);
+    }
+
+    @Transactional
+    public void resetPassword(Long id, String newPassword) {
+        UserAccount user = repository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        PasswordPolicy.check(newPassword);
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        repository.save(user);
+    }
+
+    @Transactional
+    public void deleteUser(Long id, String actorUsername) {
+        UserAccount user = repository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        if (user.getUsername().equals(actorUsername)) {
+            throw new InvalidRequestException("You cannot delete your own account");
+        }
+        repository.delete(user);
+    }
 
 }
