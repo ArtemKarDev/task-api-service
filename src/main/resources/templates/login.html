@@ -5,8 +5,11 @@
 <header th:replace="~{fragments/layout :: header('login')}"></header>
 <main>
     <h1>Вход</h1>
-    <p class="lead">Авторизация появится в следующей версии.</p>
-    <!-- Для Spring Security: method="post", th:action="@{/login}", поля username и password -->
+    <p class="lead">Введите логин и пароль.</p>
+
+    <div class="flash" th:if="${param.logout}" role="status" data-testid="login-logout">Вы вышли из системы.</div>
+    <div class="err" th:if="${param.error}" role="alert" data-testid="login-error">Неверный логин или пароль.</div>
+
     <form class="panel" style="max-width:420px" method="post" th:action="@{/login}" novalidate data-testid="login-form">
         <div class="field"><label for="username">Логин</label>
             <input id="username" name="username" autocomplete="username" data-testid="login-username"></div>
