@@ -19,7 +19,8 @@
         </nav>
 
         <div sec:authorize="isAuthenticated()" class="user-box">
-            <span class="user-name" sec:authentication="name" data-testid="user-name">user</span>
+            <a class="user-name" th:href="@{/profile/password}" title="Сменить пароль"
+               sec:authentication="name" data-testid="user-name">user</a>
             <form th:action="@{/logout}" method="post">
                 <button type="submit" class="btn small logout-link" data-testid="logout-btn">Выйти</button>
             </form>

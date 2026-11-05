@@ -89,7 +89,11 @@ public class GlobalExceptionHandler {
                                                                      HttpServletRequest request) {
         return build(HttpStatus.UNAUTHORIZED, exception.getMessage(), List.of(), request);
     }
-
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ApiErrorResponse> handleUserAlreadyExists(UserAlreadyExistsException exception,
+                                                                    HttpServletRequest request) {
+        return build(HttpStatus.CONFLICT, exception.getMessage(), List.of(), request);
+    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleAny(Exception exception, HttpServletRequest request) {
         if (exception instanceof ErrorResponse errorResponse) {
