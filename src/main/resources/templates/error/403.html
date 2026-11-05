@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Нет доступа')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('')}"></header>
+<main>
+    <h1>Недостаточно прав</h1>
+    <p class="lead">У вашей роли нет доступа к этому действию. Если оно вам нужно, обратитесь к администратору.</p>
+    <a class="btn" th:href="@{/tasks}" data-testid="back-to-tasks">Вернуться к списку задач</a>
+</main>
+</body>
+</html>
