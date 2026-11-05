@@ -18,7 +18,9 @@ public class SecurityConfig {
     /** Цепочка для REST API: без сессии, вход по токену. */
     @Bean
     @Order(1)
-    public SecurityFilterChain apiChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain apiChain(HttpSecurity http,
+                                        ApiAuthenticationEntryPoint authenticationEntryPoint,
+                                        ApiAccessDeniedHandler accessDeniedHandler) throws Exception {
         http
                 .securityMatcher("/api/**")
                 .csrf(AbstractHttpConfigurer::disable)
@@ -27,10 +29,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
         return http.build();
     }
-
 
     @Bean
     @Order(2)
