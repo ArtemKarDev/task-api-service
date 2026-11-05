@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:fragment="head(title)">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,7 +17,14 @@
             <a th:href="@{/tasks/new}" th:classappend="${active == 'create'} ? 'active'" data-testid="nav-create">Новая задача</a>
             <a th:href="@{/about}" th:classappend="${active == 'about'} ? 'active'" data-testid="nav-about">О проекте</a>
         </nav>
-        <a class="btn small login-link" th:href="@{/login}" data-testid="nav-login">Войти</a>
+
+        <div sec:authorize="isAuthenticated()" class="user-box">
+            <span class="user-name" sec:authentication="name" data-testid="user-name">user</span>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn small logout-link" data-testid="logout-btn">Выйти</button>
+            </form>
+        </div>
+        <a sec:authorize="isAnonymous()" class="btn small login-link" th:href="@{/login}" data-testid="nav-login">Войти</a>
     </div>
 </header>
 </body>

@@ -43,5 +43,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "IBM Plex Sans
 .site-header nav a{color:#c5cde0;text-decoration:none;padding:8px 14px;border-radius:8px}
 .site-header nav a:hover{background:rgba(255,255,255,.1)}
 .site-header nav a.active{background:var(--accent);color:var(--accent-ink)}
-.login-link{background:transparent;color:#fff;border-color:#5d6a7e}
+.login-link,.logout-link{background:transparent;color:#fff;border-color:#5d6a7e}
+.user-box{display:flex;align-items:center;gap:12px}
+.user-name{color:#c5cde0;font-weight:500}
 @media (max-width:760px){.header-inner{flex-wrap:wrap;padding-top:10px;padding-bottom:10px;gap:10px}.site-header nav{order:3;flex-basis:100%}.row,.toolbar{grid-template-columns:1fr}}
