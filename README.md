@@ -24,7 +24,10 @@
     - [События задач](#события-задач)
     - [Команды](#команды)
     - [Попробовать вручную](#попробовать-вручную)
+- [Настройки](#настройки)
 - [Запуск стендов в Docker](#запуск-стендов-в-docker)
+- [База данных и миграции](#база-данных-и-миграции)
+- [Jenkins](#jenkins)
 
 ---
 
@@ -414,31 +417,153 @@ docker compose --env-file env/dev.env exec kafka /opt/kafka/bin/kafka-console-co
 
 ---
 
-## Быстрый старт
+## Настройки
 
-Нужны: JDK 21, Docker Desktop, IDE (например, IntelliJ IDEA). Стенд `local`: база и Kafka работают в Docker, сам сервис запускается из IDE.
+### Файл окружения стенда
 
-1. Подготовьте файл настроек стенда (один раз) и запустите базу и Kafka:
+Каждый стенд описывается файлом `env/<стенд>.env` (шаблоны лежат в Git как `env/*.env.example`, настоящие файлы Git игнорирует). Его читает `docker compose`.
 
-```powershell
-Copy-Item env\local.env.example env\local.env
-docker compose --env-file env/local.env up -d postgres kafka
-```
+| Переменная | Что это | Пример |
+|---|---|---|
+| `COMPOSE_PROJECT_NAME` | имя проекта Compose (у `dev` должно быть `task-api-service`: по нему подключается том с данными) | `task-api-service` |
+| `APP_PORT` | порт сервиса на вашем компьютере | `8180` |
+| `DB_PORT` | порт PostgreSQL | `5432` |
+| `KAFKA_PORT` | порт Kafka | `9192` |
+| `KAFKA_UI_PORT` | порт Kafka UI | `8190` |
+| `DB_NAME`, `DB_USER` | база и пользователь | `taskdb`, `taskuser` |
+| `DB_PASSWORD` | пароль базы (для уже созданной базы менять нельзя) | |
+| `APP_SECURITY_USER_PASSWORD` | пароль пользователя `user` | |
+| `APP_SECURITY_ADMIN_PASSWORD` | пароль пользователя `admin` | |
+| `APP_SECURITY_JWT_SECRET` | секрет подписи токенов, не короче 32 символов, на каждом стенде свой | |
+| `APP_TAG` | необязательно: тег образа сервиса (по умолчанию `latest`) | |
 
-2. Запустите класс `TaskApiServiceApplication` из IDE, добавив в настройки запуска переменные окружения (значения учебные):
+Обязательные переменные в `compose.yaml` записаны с проверкой: если значения нет, `docker compose` остановится и скажет, какого именно.
 
-```
-APP_SECURITY_USER_PASSWORD=local_user_password
-APP_SECURITY_ADMIN_PASSWORD=local_admin_password
-APP_SECURITY_JWT_SECRET=local-dev-jwt-secret-0123456789abcdef
-```
+### Настройки приложения
 
-Без этих трёх переменных сервис не запустится (сделано намеренно: нельзя случайно запустить его с пустыми паролями). Адреса базы (`localhost:5433`) и Kafka (`localhost:9092`) по умолчанию уже подходят для стенда `local`.
+Они лежат в `src/main/resources/application.properties`. Любую можно переопределить переменной окружения: имя получается из имени настройки заглавными буквами, точки заменяются подчёркиваниями, дефисы убираются (`app.security.jwt.ttl-minutes` превращается в `APP_SECURITY_JWT_TTLMINUTES`).
 
-3. Откройте `http://localhost:8080/`: откроется форма входа. Войдите как `user` или `admin` (пароли из пункта 2).
+| Настройка | Что это | По умолчанию |
+|---|---|---|
+| `spring.datasource.url`, `.username` | подключение к базе | `jdbc:postgresql://localhost:5433/taskdb`, `taskuser` |
+| `spring.datasource.password` | пароль базы, берётся из `DB_PASSWORD` | учебное значение для `local` |
+| `spring.kafka.bootstrap-servers` | адрес брокера | `localhost:9092` (в контейнере `kafka:29092`) |
+| `app.kafka.topic-in`, `topic-in-dlq`, `topic-out` | имена топиков | `task_in`, `task_in_dlq`, `task_out` |
+| `app.security.user.username`, `app.security.admin.username` | логины загрузочных пользователей | `user`, `admin` |
+| `app.security.user.password`, `app.security.admin.password` | их пароли | **нет значения по умолчанию, обязательны** |
+| `app.security.jwt.secret` | секрет подписи токенов | **нет значения по умолчанию, обязателен** |
+| `app.security.jwt.ttl-minutes` | срок жизни токена, минуты | `15` |
+| `server.servlet.session.cookie.name` | имя cookie сессии (на стендах `TASKSESSION_<порт>`) | `JSESSIONID` |
+| `REQUEST_LOG_LEVEL` | подробность журнала запросов | `INFO` (на стендах `DEBUG`) |
+| `app.http-log.enabled` (`HTTP_LOG_ENABLED`) | журнал тел запросов и ответов | включён |
 
-Полезные адреса: Swagger UI `http://localhost:8080/swagger-ui/index.html`, проверка работоспособности `http://localhost:8080/actuator/health`.
+В журнале тел запросов видны пароли и токены (см. «Ограничения безопасности»).
 
 <p align="right"><a href="#оглавление">↑ к оглавлению</a></p>
 
 ---
+
+## Запуск стендов в Docker
+
+Один `compose.yaml` поднимает любой стенд. Стенд выбирается файлом окружения (`--env-file`); у каждого свои проект, порты и том с данными. Порты открыты только на `127.0.0.1`.
+
+| Стенд | Сервис | Проект Compose | Приложение | PostgreSQL | Kafka | Kafka UI |
+|---|---|---|---|---|---|---|
+| `local` | из IDE | `task-local` | 8080 | 5433 | 9092 | 8090 |
+| `dev` | Docker | `task-api-service` | 8180 | 5432 | 9192 | 8190 |
+| `stage` | Docker | `task-stage` | 8280 | 5434 | 9292 | 8290 |
+
+```mermaid
+flowchart LR
+    H["Ваш компьютер<br/>127.0.0.1:порты"] --> APP["app<br/>сервис"]
+    H --> PG[("postgres")]
+    H --> K[["kafka"]]
+    APP --> PG
+    APP --> K
+    UI["kafka-ui<br/>(профиль tools)"] --> K
+```
+
+### Первый запуск
+
+Скопируйте шаблоны (настоящие `*.env` в Git не попадают) и впишите в них значения: для `dev` и `stage` обязательно три значения авторизации (`APP_SECURITY_…`), для `local` подойдут учебные из шаблона.
+
+```powershell
+Copy-Item env\local.env.example env\local.env
+Copy-Item env\dev.env.example env\dev.env
+Copy-Item env\stage.env.example env\stage.env
+```
+
+Секрет подписи удобно сгенерировать так (96 случайных символов):
+
+```powershell
+$b = New-Object byte[] 48; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b); ($b | ForEach-Object { $_.ToString("x2") }) -join ""
+```
+
+### Команды
+
+```powershell
+# local: в Docker только база и Kafka, сервис запускается из IDE (см. «Быстрый старт»)
+docker compose --env-file env/local.env up -d postgres kafka
+
+# dev и stage: база, Kafka и сервис (образ собирается из текущего кода)
+docker compose --env-file env/dev.env up -d --build
+docker compose --env-file env/stage.env up -d --build
+
+# Kafka UI (по желанию)
+docker compose --env-file env/dev.env --profile tools up -d kafka-ui
+
+# состояние и журнал сервиса
+docker compose --env-file env/stage.env ps
+docker compose --env-file env/stage.env logs -f app
+
+# остановка (данные сохраняются)
+docker compose --env-file env/stage.env down
+```
+
+Проверка работы: `http://localhost:8280/actuator/health` (порт зависит от стенда); вход в интерфейс: `http://localhost:8280/`.
+
+> **Осторожно:** `docker compose down -v` удаляет том, то есть **все данные стенда**.
+> Имя проекта `dev` (`task-api-service`) нельзя менять: по нему подключается том с данными.
+
+### Образ сервиса
+
+Образ собирается из `Dockerfile` в два этапа (сборка Maven и лёгкий образ для запуска), с кэшем Maven между сборками. Сервис в контейнере работает от отдельного непривилегированного пользователя; у образа есть проверка здоровья по `/actuator/health`. Остальные адреса Actuator наружу не открыты.
+
+<p align="right"><a href="#оглавление">↑ к оглавлению</a></p>
+
+---
+
+## База данных и миграции
+
+PostgreSQL 17. Схему создаёт и меняет Flyway: файлы лежат в `src/main/resources/db/migration` и применяются при старте сервиса по порядку номеров.
+
+| Миграция | Что создаёт |
+|---|---|
+| `V1__create_tasks_table.sql` | таблицу задач |
+| `V2__create_processed_messages_table.sql` | таблицу обработанных сообщений Kafka (идемпотентность команд) |
+| `V3__create_users_table.sql` | таблицу пользователей (логин, хеш пароля, роль, признак «включён») |
+
+Правила:
+
+- **Применённые миграции править нельзя** (Flyway сверяет контрольные суммы). Изменение схемы делается **новым файлом** со следующим номером (например, `V4__….sql`).
+- Hibernate работает в режиме `validate`: он ничего не создаёт, а только проверяет, что описание сущностей совпадает с таблицами. Расхождение остановит запуск с понятной ошибкой.
+- Подключиться к базе стенда можно любым клиентом (например, DBeaver): адрес `localhost:<DB_PORT>`, база и пользователь из файла окружения.
+
+<p align="right"><a href="#оглавление">↑ к оглавлению</a></p>
+
+---
+
+## Jenkins
+
+Развёртывание стендов и автоматические проверки выполняются в Jenkins (в Docker на том же компьютере, `http://localhost:8081`). В этом репозитории лежат два файла (Jenkinsfile):
+
+| Файл | Что делает |
+|---|---|
+| `jenkins/stand-deploy.Jenkinsfile` | управляет стендом: параметры `STAND`, `ACTION` (`status`, `up`, `restart`, `down`), `RESET_DATA` (очистка данных, только для `dev` и `local`), `BACKUP` (копия базы), `TRIGGER` (кто запустил); при неудаче присылает сообщение в Telegram |
+| `jenkins/auto-service.Jenkinsfile` | при изменении репозитория обновляет `dev` и запускает быстрый набор тестов (`smoke`) |
+
+Настройки стендов Jenkins берёт из секретных файлов (Credentials): `env-local`, `env-dev`, `env-stage`. Их содержимое **то же, что в `env/<стенд>.env`**, включая пароли и секрет подписи, поэтому при добавлении новых переменных нужно обновить и эти файлы (Manage Jenkins → Credentials → выбрать файл → Update). Для сообщений в Telegram используются секреты `telegram-bot-token` и `telegram-chat-id`.
+
+Задания, запускающие автотесты, лежат в репозитории [task-api-tests](https://github.com/ArtemKarDev/task-api-tests) (там же описаны их параметры и сводка в Telegram).
+
+<p align="right"><a href="#оглавление">↑ к оглавлению</a></p>
