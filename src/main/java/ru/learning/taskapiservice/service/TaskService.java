@@ -8,10 +8,13 @@ import ru.learning.taskapiservice.dto.PatchTaskRequest;
 import ru.learning.taskapiservice.dto.TaskStatus;
 import ru.learning.taskapiservice.entity.Task;
 import ru.learning.taskapiservice.exceptions.TaskNotFoundException;
+import ru.learning.taskapiservice.exceptions.UnknownAssigneeException;
 import ru.learning.taskapiservice.kafka.TaskEvent;
 import ru.learning.taskapiservice.kafka.TaskEventType;
 import ru.learning.taskapiservice.repository.TaskRepository;
 import ru.learning.taskapiservice.repository.ProcessedMessageRepository;
+import ru.learning.taskapiservice.security.EmployeeDirectoryClient;
+
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,6 +28,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final ProcessedMessageRepository processedMessageRepository;
+    private final EmployeeDirectoryClient employeeDirectoryClient;
 
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
@@ -35,8 +39,11 @@ public class TaskService {
                 .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
+
+
     @Transactional
     public Task createTask(Task task) {
+        requireKnownAssignee(blankToNull(task.getAssignee()));
         return createTask(task, null);
     }
 
@@ -76,8 +83,10 @@ public class TaskService {
     @Transactional
     public Task updateTask(Long id, Task updatedTask) {
         Task existingTask = taskRepository.findById(id)
+
                 .orElseThrow(() -> new TaskNotFoundException(id));
 
+        requireKnownAssigneeIfChanged(updatedTask.getAssignee(), existingTask.getAssignee());
         existingTask.setTitle(updatedTask.getTitle());
         existingTask.setDescription(blankToNull(updatedTask.getDescription()));
         existingTask.setPriority(updatedTask.getPriority());
@@ -94,6 +103,8 @@ public class TaskService {
     public Task patchTask(Long id, PatchTaskRequest request) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException(id));
+
+        requireKnownAssigneeIfChanged(request.assignee(), task.getAssignee());
 
         if (request.title() != null) {
             task.setTitle(request.title());
@@ -128,5 +139,18 @@ public class TaskService {
 
     private static String blankToNull(String value) {
         return value == null || value.isBlank() ? null : value;
+    }
+
+    private void requireKnownAssignee(String assignee) {
+        if (assignee != null && !employeeDirectoryClient.exists(assignee)) {
+            throw new UnknownAssigneeException(assignee);
+        }
+    }
+
+    private void requireKnownAssigneeIfChanged(String newAssignee, String currentAssignee) {
+        String normalized = blankToNull(newAssignee);
+        if (normalized != null && !normalized.equals(currentAssignee)) {
+            requireKnownAssignee(normalized);
+        }
     }
 }

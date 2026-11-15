@@ -22,7 +22,7 @@ import java.nio.charset.StandardCharsets;
 //@ConditionalOnProperty(name = "app.http-log.enabled", havingValue = "true")
 public class HttpLoggingFilter extends OncePerRequestFilter {
 
-    private static final Logger log = LoggerFactory.getLogger(HttpLoggingFilter.class);
+//    private static final Logger log = LoggerFactory.getLogger(HttpLoggingFilter.class);
     private static final int MAX_BODY_LENGTH = 2000;
 
     @Override

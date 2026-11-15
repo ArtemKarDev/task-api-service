@@ -101,6 +101,22 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.NOT_FOUND, exception.getMessage(), List.of(), request);
     }
 
+    /** Исполнитель не найден в справочнике сотрудников. */
+    @ExceptionHandler(UnknownAssigneeException.class)
+    public ResponseEntity<ApiErrorResponse> handleUnknownAssignee(UnknownAssigneeException exception,
+                                                                  HttpServletRequest request) {
+        return build(HttpStatus.UNPROCESSABLE_ENTITY, exception.getMessage(), List.of(), request);
+    }
+
+    /** Справочник сотрудников не ответил: проверить исполнителя нельзя. */
+    @ExceptionHandler(DirectoryUnavailableException.class)
+    public ResponseEntity<ApiErrorResponse> handleDirectoryUnavailable(DirectoryUnavailableException exception,
+                                                                       HttpServletRequest request) {
+        log.warn("Справочник сотрудников недоступен на {} {}", request.getMethod(), request.getRequestURI());
+        return build(HttpStatus.SERVICE_UNAVAILABLE,
+                "Employee directory is temporarily unavailable, try again later", List.of(), request);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleAny(Exception exception, HttpServletRequest request) {
         if (exception instanceof ErrorResponse errorResponse) {
