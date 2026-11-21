@@ -1,0 +1,26 @@
+# Надстройка для стенда prod (сервер 1 CPU, 2 ГБ RAM).
+# Запуск: docker compose -f compose.yaml -f compose.prod.yaml --env-file <env-prod> up -d --no-build
+services:
+  postgres:
+    mem_limit: 256m
+
+  kafka:
+    mem_limit: 768m
+    environment:
+      # Только -Xmx, без -Xms: эту же переменную читает JVM каждой проверки healthcheck
+      KAFKA_HEAP_OPTS: "-Xmx256m"
+    healthcheck:
+      interval: 30s
+      start_period: 60s
+
+  app:
+    mem_limit: 768m
+    environment:
+      JAVA_TOOL_OPTIONS: "-Xmx384m -XX:MaxMetaspaceSize=160m -XX:+UseSerialGC"
+      REQUEST_LOG_LEVEL: INFO
+      HTTP_LOG_ENABLED: "false"
+
+  kafka-ui:
+    mem_limit: 384m
+    environment:
+      JAVA_TOOL_OPTIONS: "-Xmx192m -XX:+UseSerialGC"
