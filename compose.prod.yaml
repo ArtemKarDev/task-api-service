@@ -15,8 +15,10 @@ services:
 
   app:
     mem_limit: 768m
+    healthcheck:
+      start_period: 240s
     environment:
-      JAVA_TOOL_OPTIONS: "-Xmx384m -XX:MaxMetaspaceSize=160m -XX:+UseSerialGC"
+      JAVA_TOOL_OPTIONS: "-Xmx384m -XX:MaxMetaspaceSize=160m -XX:+UseSerialGC -XX:TieredStopAtLevel=1"
       REQUEST_LOG_LEVEL: INFO
       HTTP_LOG_ENABLED: "false"
 
