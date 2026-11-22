@@ -100,6 +100,9 @@ pipeline {
                             DOMAIN=$(grep '^PUBLIC_DOMAIN=' "$ENV_FILE" | tail -n1 | cut -d= -f2- | tr -d '\\r')
                             curl -fsS -o /dev/null --retry 10 --retry-delay 6 --retry-all-errors "https://$DOMAIN/login"
                             echo "https://$DOMAIN отвечает, версия $TAG"
+                            echo "== 6. Уборка: оставляем текущую версию и 2 предыдущие"
+                            remote "docker images $IMAGE --format '{{.Tag}}' | grep -vx $TAG | tail -n +3 | xargs -r -I{} docker rmi $IMAGE:{}; docker image prune -f" || true
+                            docker images "$IMAGE" --format '{{.Tag}}' | grep -vx "$TAG" | tail -n +3 | xargs -r -I{} docker rmi "$IMAGE:{}" || true
                             ;;
                         esac
                     '''
