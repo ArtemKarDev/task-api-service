@@ -52,14 +52,21 @@ pipeline {
                 ]) {
                     sh '''
                         set -eu
-                        # Файлы, созданные в Windows, могут содержать \\r: работаем с очищенными копиями
                         umask 077
+                        # Файлы из Windows: убираем \\r и метку кодировки (BOM), которую может добавить Блокнот
                         tr -d '\\r' < "$SSH_KEY_RAW" > .prod_key
-                        tr -d '\\r' < "$KNOWN_HOSTS_RAW" > .prod_known_hosts
+                        sed '1s/^\\xEF\\xBB\\xBF//' "$KNOWN_HOSTS_RAW" | tr -d '\\r' > .prod_known_hosts
+                        # Адрес сервера без случайных пробелов и переводов строки
+                        HOST=$(printf '%s' "$PROD_HOST" | tr -d '[:space:]')
 
                         OPTS="-i .prod_key -o UserKnownHostsFile=.prod_known_hosts -o StrictHostKeyChecking=yes -o BatchMode=yes"
-                        TARGET="$SSH_USER@$PROD_HOST"
+                        TARGET="$SSH_USER@$HOST"
                         remote() { ssh $OPTS "$TARGET" "$@"; }
+
+                        echo "== 0. Подключение к серверу как $SSH_USER"
+                        ssh-keygen -F "$HOST" -f .prod_known_hosts > /dev/null \\
+                          || { echo "В prod-known-hosts нет записи для адреса из prod-host"; exit 1; }
+                        remote true
 
                         case "$ACTION" in
                           status)
