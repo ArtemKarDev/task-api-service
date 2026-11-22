@@ -7,10 +7,14 @@ services:
   kafka:
     mem_limit: 768m
     environment:
-      # Только -Xmx, без -Xms: эту же переменную читает JVM каждой проверки healthcheck
       KAFKA_HEAP_OPTS: "-Xmx256m"
     healthcheck:
-      interval: 30s
+      # На 1 CPU штатная проверка (отдельная JVM) не укладывается в таймаут.
+      # Проверяем, что брокер принимает соединения на внутреннем порту.
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/29092"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
       start_period: 60s
 
   app:
