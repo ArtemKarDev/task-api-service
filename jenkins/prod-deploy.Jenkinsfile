@@ -36,7 +36,9 @@ pipeline {
         stage('Build image') {
             when { expression { params.ACTION == 'deploy' && !params.APP_TAG?.trim() } }
             steps {
-                sh 'docker build -t "$IMAGE:$TAG" .'
+                withCredentials([file(credentialsId: 'env-prod', variable: 'ENV_FILE')]) {
+                    sh 'APP_TAG="$TAG" docker compose -f compose.yaml --env-file "$ENV_FILE" build app'
+                }
             }
         }
 
