@@ -21,8 +21,29 @@ services:
       JAVA_TOOL_OPTIONS: "-Xmx384m -XX:MaxMetaspaceSize=160m -XX:+UseSerialGC -XX:TieredStopAtLevel=1"
       REQUEST_LOG_LEVEL: INFO
       HTTP_LOG_ENABLED: "false"
+      SERVER_FORWARDHEADERSSTRATEGY: framework
 
   kafka-ui:
     mem_limit: 384m
     environment:
       JAVA_TOOL_OPTIONS: "-Xmx192m -XX:+UseSerialGC"
+
+  caddy:
+    image: caddy:2.8
+    restart: unless-stopped
+    mem_limit: 64m
+    depends_on:
+      - app
+    environment:
+      PUBLIC_DOMAIN: ${PUBLIC_DOMAIN:?задайте PUBLIC_DOMAIN в env-файле}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
