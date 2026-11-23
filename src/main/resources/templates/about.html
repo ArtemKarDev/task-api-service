@@ -3,18 +3,137 @@
 <head th:replace="~{fragments/layout :: head('О проекте')}"></head>
 <body>
 <header th:replace="~{fragments/layout :: header('about')}"></header>
-<main>
-    <h1>О проекте</h1>
-    <p class="lead">Учебное приложение для практики автоматизированного тестирования.</p>
-    <div class="panel about" data-testid="about-content">
-        <p>В Task Lab можно создавать, искать, изменять и удалять задачи. Приложение намеренно простое: на нём удобно отрабатывать тесты, не отвлекаясь на сложную логику.</p>
+<main class="about-page" data-testid="about-content">
+
+    <!-- Об авторе -->
+    <section id="author" class="panel about-hero">
+        <img class="about-avatar" src="https://github.com/ArtemKarDev.png?size=320"
+             alt="Фото: Артём Карлашов" width="160" height="160" loading="lazy">
+        <div>
+            <h1>Артём Карлашов</h1>
+            <p class="about-role">AQA Engineer · Java</p>
+            <p>Инженер по автоматизации тестирования: в данный момент развиваюсь в автоматизации на Java.
+                Строю тестовые фреймворки для API, баз данных и асинхронных интеграций (Kafka),
+                встраиваю тесты в CI и учу коллег автоматизации.</p>
+            <p class="about-links">
+                <a class="btn small" href="https://github.com/ArtemKarDev" target="_blank" rel="noopener">GitHub</a>
+                <a class="btn small" href="https://t.me/Artem_Karlashov" target="_blank" rel="noopener">Telegram</a>
+                <a class="btn small" href="mailto:artemkarlashov@yandex.ru">Почта</a>
+            </p>
+        </div>
+    </section>
+
+    <section id="path" class="panel">
+        <h2>Путь</h2>
+        <ol class="about-path">
+            <li>Ручное тестирование веб-приложений и API</li>
+            <li>SQL, Postman, работа с логами и очередями</li>
+            <li>Автотесты API на Java</li>
+            <li>Инфраструктура тестов: CI, Docker, тестовые стенды и заглушки</li>
+            <li>Наставничество и обучение команды</li>
+        </ol>
+    </section>
+
+    <!-- О проекте -->
+    <section id="project" class="panel">
+        <h2>О проекте</h2>
+        <p>Этот проект создан для практических упражнений по автоматизации тестирования.
+            Сервис и автотесты к нему написаны с нуля и устроены «как на работе»: отдельные репозитории,
+            несколько стендов, CI, внешняя интеграция, асинхронный обмен сообщениями и контроль контракта API.
+            На нём я отрабатываю подходы, которые затем переношу в рабочие проекты и в обучение коллег.</p>
+    </section>
+
+    <section id="now" class="panel">
+        <h2>Что есть сейчас</h2>
+        <div class="about-cards">
+            <article>
+                <h3>Сервис Task Lab</h3>
+                <ul>
+                    <li>REST API и веб-страницы: задачи, поиск, роли <code>USER</code> и <code>ADMIN</code></li>
+                    <li>PostgreSQL и миграции Flyway</li>
+                    <li>Kafka: события об изменениях, команды, очередь отклонённых сообщений</li>
+                    <li>Вход по JWT для API и по форме для страниц</li>
+                    <li>Проверка исполнителя во внешнем справочнике по OAuth2</li>
+                </ul>
+            </article>
+            <article>
+                <h3>Автотесты</h3>
+                <ul>
+                    <li>Java 21, JUnit 5, REST Assured, Selenide, Allure, Spring</li>
+                    <li>API, база данных, Kafka и UI (Page Object)</li>
+                    <li>Контракт ответов и событий по JSON Schema</li>
+                    <li>Заглушка внешней системы на WireMock</li>
+                    <li>Фикстуры-аннотации, параллельный запуск</li>
+                </ul>
+            </article>
+            <article>
+                <h3>Инфраструктура</h3>
+                <ul>
+                    <li>Стенды <code>dev</code> и <code>stage</code> в Docker</li>
+                    <li>Jenkins: деплой, smoke при изменениях, ночной регресс, отчёты Allure, сводка в Telegram</li>
+                    <li>Этот сайт: стенд <code>prod</code> на VPS, HTTPS (Caddy, Let's Encrypt), деплой и откат по SSH</li>
+                </ul>
+            </article>
+        </div>
+    </section>
+
+    <section id="diagrams" class="panel">
+        <h2>Как устроено</h2>
+        <figure>
+            <img src="/images/architecture.svg" alt="Схема: сервис, PostgreSQL, Kafka, справочник сотрудников и автотесты" loading="lazy">
+            <figcaption>Сервис, его зависимости и то, что проверяют автотесты</figcaption>
+        </figure>
+        <figure>
+            <img src="/images/stands.svg" alt="Схема: стенды dev, stage и prod и задания Jenkins" loading="lazy">
+            <figcaption>Путь изменения: dev → stage → prod</figcaption>
+        </figure>
+    </section>
+
+    <section id="try" class="panel">
+        <h2>Попробовать</h2>
+        <p><a th:href="@{/swagger-ui/index.html}" target="_blank" rel="noopener">Swagger UI</a> —
+            описание REST API, открыто без входа.</p>
+
+        <div class="about-demo" th:if="${demo != null}">
+            <dl>
+                <dt>Логин</dt>   <dd th:text="${demo.username()}">demo</dd>
+                <dt>Пароль</dt>  <dd th:text="${demo.password()}">password</dd>
+            </dl>
+            <form th:action="@{/login}" method="post">
+                <input type="hidden" name="username" th:value="${demo.username()}">
+                <input type="hidden" name="password" th:value="${demo.password()}">
+                <button type="submit" class="btn">Войти как гость</button>
+            </form>
+        </div>
+        <p class="about-note" th:if="${demo != null}">
+            Гость может создавать, искать и изменять задачи, но не удалять их. Задачи гостя видят все посетители.
+        </p>
+    </section>
+
+    <section id="plans" class="panel">
+        <h2>Планы</h2>
         <ul>
-            <li><b>UI-тесты:</b> у ключевых элементов есть атрибуты <code>data-testid</code>.</li>
-            <li><b>API-тесты:</b> те же операции доступны через REST.</li>
-            <li><b>Данные:</b> задачи хранятся в базе данных.</li>
+            <li>Развитие UI-направления на современных инструментах</li>
+            <li>gRPC и GraphQL: новые протоколы в сервисе и тесты для них</li>
+            <li>Нагрузочное тестирование</li>
+            <li>Testcontainers: независимые от стенда интеграционные тесты</li>
+            <li>Мониторинг стендов: метрики и дашборды</li>
         </ul>
-        <p>Планируется: авторизация, роли пользователей и расширенные фильтры.</p>
-    </div>
+    </section>
+
+    <section id="source" class="panel">
+        <h2>Исходный код</h2>
+        <div class="about-repos">
+            <a class="about-repo" href="https://github.com/ArtemKarDev/task-api-service" target="_blank" rel="noopener">
+                <strong>task-api-service</strong>
+                <span>Сервис: Spring Boot, PostgreSQL, Kafka, OAuth2-интеграция</span>
+            </a>
+            <a class="about-repo" href="https://github.com/ArtemKarDev/task-api-tests" target="_blank" rel="noopener">
+                <strong>task-api-tests</strong>
+                <span>Автотесты: API, БД, Kafka, UI, JSON Schema, WireMock</span>
+            </a>
+        </div>
+    </section>
 </main>
 </body>
 </html>

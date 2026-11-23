@@ -95,6 +95,12 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.CONFLICT, exception.getMessage(), List.of(), request);
     }
 
+    @ExceptionHandler(DemoAccountException.class)
+    public ResponseEntity<ApiErrorResponse> handleDemoAccount(DemoAccountException exception,
+                                                              HttpServletRequest request) {
+        return build(HttpStatus.FORBIDDEN, exception.getMessage(), List.of(), request);
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleUserNotFound(UserNotFoundException exception,
                                                                HttpServletRequest request) {

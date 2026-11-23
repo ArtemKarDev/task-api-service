@@ -11,11 +11,14 @@
 <body>
 <header th:fragment="header(active)" class="site-header">
     <div class="header-inner">
-        <a class="brand" th:href="@{/tasks}" data-testid="brand">Task Lab</a>
+        <a class="brand" th:href="@{/}" data-testid="brand">Task Lab</a>
         <nav aria-label="Основное меню">
-            <a th:href="@{/tasks}" th:classappend="${active == 'search'} ? 'active'" data-testid="nav-search">Поиск задач</a>
-            <a th:href="@{/tasks/new}" th:classappend="${active == 'create'} ? 'active'" data-testid="nav-create">Новая задача</a>
+            <a sec:authorize="isAuthenticated()" th:href="@{/tasks}"
+               th:classappend="${active == 'search'} ? 'active'" data-testid="nav-search">Поиск задач</a>
+            <a sec:authorize="isAuthenticated()" th:href="@{/tasks/new}"
+               th:classappend="${active == 'create'} ? 'active'" data-testid="nav-create">Новая задача</a>
             <a th:href="@{/about}" th:classappend="${active == 'about'} ? 'active'" data-testid="nav-about">О проекте</a>
+            <a th:href="@{/swagger-ui/index.html}" target="_blank" rel="noopener">API</a>
         </nav>
 
         <div sec:authorize="isAuthenticated()" class="user-box">

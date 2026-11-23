@@ -9,6 +9,7 @@ import ru.learning.taskapiservice.entity.Role;
 import ru.learning.taskapiservice.entity.UserAccount;
 import ru.learning.taskapiservice.exceptions.*;
 import ru.learning.taskapiservice.repository.UserAccountRepository;
+import ru.learning.taskapiservice.security.DemoProperties;
 import ru.learning.taskapiservice.security.PasswordPolicy;
 
 import java.util.List;
@@ -20,8 +21,13 @@ public class UserService {
     private final UserAccountRepository repository;
     private final PasswordEncoder passwordEncoder;
 
+    private final DemoProperties demo;
+
     @Transactional
     public void changePassword(String username, String currentPassword, String newPassword) {
+        if (demo.active() && demo.username().equals(username)) {
+            throw new DemoAccountException();
+        }
         UserAccount user = repository.findByUsername(username)
                 .orElseThrow(InvalidCredentialsException::new);
 
@@ -95,5 +101,23 @@ public class UserService {
         }
         repository.delete(user);
     }
+
+    /**
+     * Приводит учётную запись к заданному состоянию: создаёт, если её нет,
+     * иначе ставит указанные пароль и роль и включает. Используется для учебного пользователя.
+     */
+    @Transactional
+    public void ensureUser(String username, String rawPassword, Role role) {
+        PasswordPolicy.check(rawPassword);
+        UserAccount user = repository.findByUsername(username).orElseGet(UserAccount::new);
+        user.setUsername(username);
+        if (user.getPasswordHash() == null || !passwordEncoder.matches(rawPassword, user.getPasswordHash())) {
+            user.setPasswordHash(passwordEncoder.encode(rawPassword));
+        }
+        user.setRole(role);
+        user.setEnabled(true);
+        repository.save(user);
+    }
+
 
 }

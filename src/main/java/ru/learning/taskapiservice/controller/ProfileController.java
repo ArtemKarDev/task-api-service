@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.learning.taskapiservice.dto.PasswordForm;
+import ru.learning.taskapiservice.exceptions.DemoAccountException;
 import ru.learning.taskapiservice.exceptions.InvalidRequestException;
 import ru.learning.taskapiservice.exceptions.PasswordChangeException;
 import ru.learning.taskapiservice.service.UserService;
@@ -45,6 +46,9 @@ public class ProfileController {
 
         try {
             userService.changePassword(principal.getName(), form.getCurrentPassword(), form.getNewPassword());
+        } catch (DemoAccountException e) {
+            bindingResult.reject("demo", "Учебному пользователю нельзя менять пароль");
+            return "profile-password";
         } catch (PasswordChangeException e) {
             switch (e.getReason()) {
                 case WRONG_CURRENT -> bindingResult.rejectValue("currentPassword", "wrong",
