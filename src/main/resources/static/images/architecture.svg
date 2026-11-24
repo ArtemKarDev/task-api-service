@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450" font-family="IBM Plex Sans, Segoe UI, Arial, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">Архитектура Task Lab</title>
+  <desc id="d">Автотесты обращаются к сервису по HTTP и напрямую проверяют базу данных и заглушку справочника. Сервис работает с PostgreSQL, Kafka и справочником сотрудников.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3451e6"/>
+    </marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7a849a"/>
+    </marker>
+  </defs>
+
+  <!-- связи сервиса (сплошные) -->
+  <g fill="none" stroke="#3451e6" stroke-width="2">
+    <path d="M210,210 H296" marker-end="url(#a)"/>
+    <path d="M500,175 H550 V80 H596" marker-end="url(#a)"/>
+    <path d="M504,210 H596" marker-start="url(#a)" marker-end="url(#a)"/>
+    <path d="M500,245 H550 V355 H596" marker-end="url(#a)"/>
+  </g>
+  <!-- проверки тестов напрямую (пунктир) -->
+  <g fill="none" stroke="#7a849a" stroke-width="2" stroke-dasharray="6 5">
+    <path d="M115,150 V45 H596" marker-end="url(#g)"/>
+    <path d="M115,270 V385 H596" marker-end="url(#g)"/>
+  </g>
+
+  <!-- подписи на линиях -->
+  <g font-size="12" fill="#5b6476">
+    <text x="253" y="200" text-anchor="middle">HTTP</text>
+    <text x="300" y="38">проверка данных (SQL)</text>
+    <text x="300" y="378">правила и журнал заглушки (/__admin)</text>
+    <text x="556" y="125" text-anchor="start">JPA</text>
+    <text x="550" y="202" text-anchor="middle">события,</text>
+    <text x="550" y="232" text-anchor="middle">команды</text>
+    <text x="556" y="300">GET /employees</text>
+    <text x="556" y="316">+ токен OAuth2</text>
+  </g>
+
+  <!-- блоки -->
+  <g stroke-width="1.5">
+    <rect x="20" y="150" width="190" height="120" rx="10" fill="#eef1fd" stroke="#3451e6"/>
+    <rect x="300" y="150" width="200" height="120" rx="10" fill="#1b2335" stroke="#1b2335"/>
+    <rect x="600" y="25" width="180" height="80" rx="10" fill="#fff" stroke="#c3cbdc"/>
+    <rect x="600" y="175" width="180" height="70" rx="10" fill="#fff" stroke="#c3cbdc"/>
+    <rect x="600" y="320" width="180" height="92" rx="10" fill="#fff" stroke="#c3cbdc"/>
+  </g>
+
+  <g text-anchor="middle">
+    <text x="115" y="185" font-size="16" font-weight="600" fill="#1b2335">Автотесты</text>
+    <text x="115" y="205" font-size="12" fill="#5b6476">task-api-tests</text>
+    <text x="115" y="232" font-size="13" fill="#1b2335">API · UI · БД</text>
+    <text x="115" y="252" font-size="13" fill="#1b2335">Kafka · контракт</text>
+
+    <text x="400" y="185" font-size="16" font-weight="600" fill="#fff">task-api-service</text>
+    <text x="400" y="205" font-size="12" fill="#b9c3d8">Spring Boot 4 · Java 21</text>
+    <text x="400" y="232" font-size="13" fill="#fff">REST API · страницы</text>
+    <text x="400" y="252" font-size="13" fill="#fff">JWT · роли</text>
+
+    <text x="690" y="58" font-size="15" font-weight="600" fill="#1b2335">PostgreSQL</text>
+    <text x="690" y="80" font-size="12" fill="#5b6476">задачи, пользователи</text>
+
+    <text x="690" y="205" font-size="15" font-weight="600" fill="#1b2335">Kafka</text>
+    <text x="690" y="226" font-size="12" fill="#5b6476">task_in · task_out · dlq</text>
+
+    <text x="690" y="352" font-size="15" font-weight="600" fill="#1b2335">Справочник</text>
+    <text x="690" y="371" font-size="15" font-weight="600" fill="#1b2335">сотрудников</text>
+    <text x="690" y="396" font-size="12" fill="#5b6476">WireMock · OAuth2</text>
+  </g>
+
+  <!-- легенда -->
+  <g font-size="12" fill="#5b6476">
+    <line x1="20" y1="432" x2="60" y2="432" stroke="#3451e6" stroke-width="2"/>
+    <text x="68" y="436">работа сервиса</text>
+    <line x1="200" y1="432" x2="240" y2="432" stroke="#7a849a" stroke-width="2" stroke-dasharray="6 5"/>
+    <text x="248" y="436">тесты проверяют напрямую (Kafka — слушателями топиков)</text>
+  </g>
+</svg>
