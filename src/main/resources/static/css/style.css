@@ -115,3 +115,14 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "IBM Plex Sans
     .about-hero { flex-direction: column; text-align: center; }
     .about-links { justify-content: center; }
 }
+
+/* ---------- Таблица задач ---------- */
+main table { width: 100%; }
+main table td { overflow-wrap: anywhere; }          /* длинные слова в тексте переносятся */
+
+/* узкие столбцы: ID и действия — не переносить и не сжимать */
+main table th:first-child,
+main table td:first-child,
+main table th:last-child,
+main table td:last-child { white-space: nowrap; overflow-wrap: normal; width: 1%; }
+main table td:last-child { padding-right: 1rem; }
